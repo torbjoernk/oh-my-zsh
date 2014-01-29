@@ -17,17 +17,30 @@ function rvm_prompt_info() {
   local rvm_prompt
   rvm_prompt=$($HOME/.rvm/bin/rvm-prompt i v g)
   [[ "${rvm_prompt}" == "" ]] && return
-  echo "${ZSH_THEME_RVM_PROMPT_PREFIX:=(}${rvm_prompt}${ZSH_THEME_RVM_PROMPT_SUFFIX:=)}"
+  echo "${ZSH_THEME_ENV_PROMPT_PREFIX:=(}\xE2\x8B\x84: ${rvm_prompt}${ZSH_THEME_ENV_PROMPT_SUFFIX:=)}"
 }
 
-PROMPT='%{$fg[$PROMPTCOLOR]%}%c%{$reset_color%} $(git_prompt_info)$(rvm_prompt_info)%{$fg[$PROMPTCOLOR]%}%(!.#.»)%{$reset_color%} '
+function pyenv_prompt_info() {
+  if [[ -d $PYENV_ROOT/bin ]]; then
+    echo "${ZSH_THEME_ENV_PROMPT_PREFIX}Py: $(pyenv version-name)${ZSH_THEME_ENV_PROMPT_SUFFIX}"
+  fi
+}
+
+# disables prompt mangling in virtual_env/bin/activate
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+
+function ruby_python_prompt_info() {
+  echo "$(rvm_prompt_info)$(pyenv_prompt_info)"
+}
+
+PROMPT='%{$fg[$PROMPTCOLOR]%}%c%{$reset_color%} $(git_prompt_info)$(ruby_python_prompt_info)%{$fg[$PROMPTCOLOR]%}%(!.#.»)%{$reset_color%} '
 PROMPT2='%{$fg[red]%}\ %{$reset_color%}'
 RPROMPT='$(git_prompt_short_sha)%{$fg[blue]%}%~%{$reset_color%} ${return_code} '
 
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$reset_color%}:: %{$fg[yellow]%}("
 ZSH_THEME_GIT_PROMPT_SUFFIX=")%{$reset_color%} "
-ZSH_THEME_RVM_PROMPT_PREFIX="%{$fg[cyan]%}["
-ZSH_THEME_RVM_PROMPT_SUFFIX="] %{$reset_color%}"
+ZSH_THEME_ENV_PROMPT_PREFIX="%{$fg[cyan]%}["
+ZSH_THEME_ENV_PROMPT_SUFFIX="] %{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_SHA_BEFORE="%{$fg[yellow]%}("
 ZSH_THEME_GIT_PROMPT_SHA_AFTER=$ZSH_THEME_GIT_PROMPT_SUFFIX
 ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[green]%}✓%{$fg[yellow]%}"
