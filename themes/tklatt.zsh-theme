@@ -17,12 +17,32 @@ function rvm_prompt_info() {
   local rvm_prompt
   rvm_prompt=$($HOME/.rvm/bin/rvm-prompt i v g)
   [[ "${rvm_prompt}" == "" ]] && return
-  echo "${ZSH_THEME_ENV_PROMPT_PREFIX:=(}\xE2\x8B\x84: ${rvm_prompt}${ZSH_THEME_ENV_PROMPT_SUFFIX:=)}"
+  echo "${ZSH_THEME_ENV_PROMPT_PREFIX:=(}\xE2\x8B\x84 ${rvm_prompt}${ZSH_THEME_ENV_PROMPT_SUFFIX:=)}"
 }
 
 function pyenv_prompt_info() {
   if [[ -d $PYENV_ROOT/bin ]]; then
-    echo "${ZSH_THEME_ENV_PROMPT_PREFIX}Py: $(pyenv version-name)${ZSH_THEME_ENV_PROMPT_SUFFIX}"
+    if [[ "$(pyenv version-name)" != "system" ]]; then
+      _python_version="$(python --version 2>&1 | grep -oe '^Python\s[0-9\.]*' | grep -oe '[0-9\.]*')"
+      _python_type="$(python --version 2>&1 | tail -1 | grep -oe '[a-zA-Z]*' | head -1)"
+
+      if [[ "$_python_type" != "Python" ]]; then
+        # non-standard Python interpreter such as PyPy
+        _type_version="$(python --version 2>&1 | tail -1 | grep -oe '[a-zA-Z]*\s[0-9\.]*' | head -1 | grep -oe '[0-9\.]*')"
+        _python="${_python_type}-${_type_version}(${_python_version})"
+      else
+        _python="${_python_version}"
+      fi
+      export PYTHON_VERSION_TAG="${_python}"
+      # strip Python version id from virtuelenv name
+      _venv=$(pyenv version-name | sed -n "s/${PYTHON_VERSION_TAG}_//gp")
+      if [[ -n "$_venv" ]]; then
+        _python_version_tag="${_python}@${_venv}"
+      else
+        _python_version_tag="${_python}"
+      fi
+      echo "${ZSH_THEME_ENV_PROMPT_PREFIX}\xEA\x97\xA5 ${_python_version_tag}${ZSH_THEME_ENV_PROMPT_SUFFIX}"
+    fi
   fi
 }
 
