@@ -7,7 +7,10 @@ function git_prompt_info() {
   if [[ "$(git config --get oh-my-zsh.hide-status)" != "1" ]]; then
     ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
       ref=$(command git rev-parse --short HEAD 2> /dev/null) || return
-    echo "$ZSH_THEME_GIT_PROMPT_PREFIX${ref#refs/heads/}$(parse_git_dirty)$(git_prompt_status)$ZSH_THEME_GIT_PROMPT_SUFFIX"
+      ref="${ref#refs/heads/}"
+      ref="${ref/feature/F}"
+      ref="${ref/release/R}"
+    echo "$ZSH_THEME_GIT_PROMPT_PREFIX${ref}$(parse_git_dirty)$(git_prompt_status)$ZSH_THEME_GIT_PROMPT_SUFFIX"
   fi
 }
 
@@ -17,7 +20,7 @@ function rvm_prompt_info() {
   local rvm_prompt
   rvm_prompt=$($HOME/.rvm/bin/rvm-prompt i v g)
   [[ "${rvm_prompt}" == "" ]] && return
-  echo "${ZSH_THEME_ENV_PROMPT_PREFIX:=(}\xE2\x8B\x84 ${rvm_prompt}${ZSH_THEME_ENV_PROMPT_SUFFIX:=)}"
+  echo "${ZSH_THEME_ENV_PROMPT_PREFIX:=(}\xE2\x8B\x84${rvm_prompt}${ZSH_THEME_ENV_PROMPT_SUFFIX:=)}"
 }
 
 function pyenv_prompt_info() {
@@ -41,7 +44,7 @@ function pyenv_prompt_info() {
       else
         _python_version_tag="${_python}"
       fi
-      echo "${ZSH_THEME_ENV_PROMPT_PREFIX}\xEA\x97\xA5 ${_python_version_tag}${ZSH_THEME_ENV_PROMPT_SUFFIX}"
+      echo "${ZSH_THEME_ENV_PROMPT_PREFIX}\xEA\x97\xA5${_python_version_tag}${ZSH_THEME_ENV_PROMPT_SUFFIX}"
     fi
   fi
 }
@@ -53,12 +56,13 @@ function ruby_python_prompt_info() {
   echo "$(rvm_prompt_info)$(pyenv_prompt_info)"
 }
 
-PROMPT='%{$fg[$PROMPTCOLOR]%}%c%{$reset_color%} $(git_prompt_info)$(ruby_python_prompt_info)%{$fg[$PROMPTCOLOR]%}%(!.#.»)%{$reset_color%} '
+PROMPT='%{$fg[grey]%}$(date +%H:%m:%S)%{$color_reset%} $(git_prompt_info)$(ruby_python_prompt_info)%{$fg[$PROMPTCOLOR]%}%(!.#.»)%{$reset_color%} '
 PROMPT2='%{$fg[red]%}\ %{$reset_color%}'
-RPROMPT='$(git_prompt_short_sha)%{$fg[blue]%}%~%{$reset_color%} ${return_code} '
+RPROMPT='$(git_prompt_short_sha) %{$fg[blue]%}%~%{$reset_color%} ${return_code} '
 
-ZSH_THEME_GIT_PROMPT_PREFIX="%{$reset_color%}:: %{$fg[yellow]%}("
-ZSH_THEME_GIT_PROMPT_SUFFIX=")%{$reset_color%} "
+#ZSH_THEME_GIT_PROMPT_PREFIX="%{$reset_color%}:: %{$fg[yellow]%}("
+ZSH_THEME_GIT_PROMPT_PREFIX="%{$reset_color%}%{$fg[yellow]%}("
+ZSH_THEME_GIT_PROMPT_SUFFIX=")%{$reset_color%}"
 ZSH_THEME_ENV_PROMPT_PREFIX="%{$fg[cyan]%}["
 ZSH_THEME_ENV_PROMPT_SUFFIX="] %{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_SHA_BEFORE="%{$fg[yellow]%}("
