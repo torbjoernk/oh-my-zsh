@@ -56,7 +56,7 @@ function ruby_python_prompt_info() {
   echo "$(rvm_prompt_info)$(pyenv_prompt_info)"
 }
 
-PROMPT='%{$fg[grey]%}$(date +%H:%m:%S)%{$color_reset%} $(git_prompt_info)$(ruby_python_prompt_info)%{$fg[$PROMPTCOLOR]%}%(!.#.»)%{$reset_color%} '
+PROMPT='%{$fg[white]%}$(date +%H:%m:%S)%{$color_reset%} $(git_prompt_info)$(ruby_python_prompt_info)%{$fg[$PROMPTCOLOR]%}%(!.#.»)%{$reset_color%} '
 PROMPT2='%{$fg[red]%}\ %{$reset_color%}'
 RPROMPT='$(git_prompt_short_sha) %{$fg[blue]%}%~%{$reset_color%} ${return_code} '
 
