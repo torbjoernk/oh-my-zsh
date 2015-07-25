@@ -1,3 +1,6 @@
 [submodule "custom/plugins/git-annex"]
 	path = custom/plugins/git-annex
 	url = https://github.com/Schnouki/git-annex-zsh-completion.git
+[submodule "plugins/git-annex"]
+	path = plugins/git-annex
+	url = git@github.com:Schnouki/git-annex-zsh-completion.git
