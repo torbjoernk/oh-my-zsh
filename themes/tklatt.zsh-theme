@@ -24,7 +24,7 @@ function rvm_prompt_info() {
 }
 
 function pyenv_prompt_info() {
-  if [[ -d $PYENV_ROOT/bin ]]; then
+  if [[ -d "$PYENV_ROOT" ]]; then
     if [[ "$(pyenv version-name)" != "system" ]]; then
       _python_version="$(python --version 2>&1 | grep -oe '^Python\s[0-9\.]*' | grep -oe '[0-9\.]*')"
       _python_type="$(python --version 2>&1 | tail -1 | grep -oe '[a-zA-Z]*' | head -1)"
