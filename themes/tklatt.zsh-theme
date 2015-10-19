@@ -132,4 +132,4 @@ PROMPT='
 %F{$PROMPTCOLOR}%n%f%F{black}@%f%F{blue}$(hostname -s)%f %B%F{yellow}$(current_pwd)%f%b $(git_prompt_string)
 $(prompt_char) '
 export SPROMPT="Correct %F{red}%R%f to %F{green}%r%f [(y)es (n)o (a)bort (e)dit]? "
-RPROMPT='${return_code} %F{green}$(pyenv_prompt_info)%f%F{yellow}$(rvm_prompt_info)%f[%D %*]'
+RPROMPT='${return_code} %F{green}$(pyenv_prompt_info)%f%F{yellow}$(rvm_prompt_info)%f[%*]'
